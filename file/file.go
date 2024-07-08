@@ -1,6 +1,7 @@
 package file
 
 import (
+	"io/fs"
 	"os"
 	"strings"
 )
@@ -19,30 +20,20 @@ var extMap = map[string]string{
 	"cpp":    ".cpp",
 }
 
-func GetFilesInCurrentDir() ([]*File, error) {
+func GetCodeFiles() ([]*File, error) {
 	var files []*File
 
-	dir, err := os.Getwd()
+	fileInfos, err := GetFilesInCurrentDir()
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 
-	dirId, err := os.Open(dir)
-	if err != nil {
-		return nil, nil
-	}
-
-	// 获取当前文件下的所有文件和目录
-	fileInfos, err := dirId.Readdir(0)
-	if err != nil {
-		return nil, nil
-	}
-
-	for _, file := range fileInfos {
-		if !filterFile(file) {
+	// 过滤文件
+	for _, f := range fileInfos {
+		if !filterFile(f) {
 			continue
 		}
-		name := file.Name()
+		name := f.Name()
 
 		content, err := fileContent(name)
 		if err != nil {
@@ -60,6 +51,26 @@ func GetFilesInCurrentDir() ([]*File, error) {
 	}
 
 	return files, nil
+}
+
+func GetFilesInCurrentDir() ([]fs.FileInfo, error) {
+	dir, err := os.Getwd()
+	if err != nil {
+		return nil, nil
+	}
+
+	dirId, err := os.Open(dir)
+	if err != nil {
+		return nil, nil
+	}
+
+	// 获取当前文件下的所有文件和目录
+	fileInfos, err := dirId.Readdir(0)
+	if err != nil {
+		return nil, nil
+	}
+
+	return fileInfos, nil
 }
 
 // 过滤目录和其他文件，只保留已经实现的编程语言的文件和 in,out 文件

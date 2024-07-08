@@ -3,10 +3,10 @@ package compile
 import (
 	"bytes"
 	"errors"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"os"
 
 	"github.com/axliupore/goj/file"
 )
@@ -68,6 +68,18 @@ func (g *CodeRunner) Run(exePath string, input string, args ...string) (string, 
 	return output, nil
 }
 
-func (c *CodeRunner) Remove(name string) {
-	os.Remove(name)
+func (c *CodeRunner) Remove(exePath string) {
+	parts := strings.Split(exePath, "/")
+	if len(parts) == 0 {
+		return
+	}
+	name := parts[len(parts)-1]
+
+	files, _ := file.GetFilesInCurrentDir()
+	for _, f := range files {
+		if strings.HasPrefix(f.Name(), name) {
+			// 删除所有以 name 开头的文件
+			os.Remove(f.Name())
+		}
+	}
 }

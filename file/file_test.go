@@ -6,7 +6,7 @@ import (
 )
 
 func TestGetCurrentFiles(t *testing.T) {
-	files, err := GetFilesInCurrentDir()
+	files, err := GetCodeFiles()
 	if err != nil {
 		t.Fatal(err)
 	}

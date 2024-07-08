@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	files, err := file.GetFilesInCurrentDir()
+	files, err := file.GetCodeFiles()
 	if err != nil {
 		log.Fatalln(err)
 	}
