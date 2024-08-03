@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/axliupore/goj/template"
 	"log"
 	"os"
 
@@ -9,6 +10,11 @@ import (
 )
 
 func main() {
+	if len(os.Args) >= 2 {
+		l := os.Args[1]
+		template.Output(l)
+		return
+	}
 	files, err := file.GetCodeFiles()
 	if err != nil {
 		log.Fatalln(err)
@@ -44,11 +50,8 @@ func main() {
 	}
 	outs = append(outs, cppOuts...)
 
-	if err != nil {
-		log.Fatalln(err)
-	}
 	for _, f := range outs {
-		err := saveOutputFile(f)
+		err = saveOutputFile(f)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -71,13 +74,13 @@ func fileTypes(files []*file.File) ([]*file.File, []*file.File, []*file.File) {
 	fs := make([]*file.File, 0)
 	ins := make([]*file.File, 0)
 	outs := make([]*file.File, 0)
-	for _, file := range files {
-		if file.Suffix == ".in" {
-			ins = append(ins, file)
-		} else if file.Suffix == ".out" {
-			outs = append(outs, file)
+	for _, f := range files {
+		if f.Suffix == ".in" {
+			ins = append(ins, f)
+		} else if f.Suffix == ".out" {
+			outs = append(outs, f)
 		} else {
-			fs = append(fs, file)
+			fs = append(fs, f)
 		}
 	}
 	return fs, ins, outs

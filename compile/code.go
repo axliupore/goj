@@ -75,11 +75,13 @@ func (c *CodeRunner) Remove(exePath string) {
 	}
 	name := parts[len(parts)-1]
 
-	files, _ := file.GetFilesInCurrentDir()
+	dir, _ := os.Getwd()
+
+	files, _ := file.GetFilesDir(dir)
 	for _, f := range files {
 		if strings.HasPrefix(f.Name(), name) {
 			// 删除所有以 name 开头的文件
-			os.Remove(f.Name())
+			_ = os.Remove(f.Name())
 		}
 	}
 }

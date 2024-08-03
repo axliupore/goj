@@ -16,7 +16,7 @@ func (c *CppRunner) Exec(files, inFiles []*file.File) ([]*file.File, error) {
 	var outFiles []*file.File
 	for _, f := range files {
 		for _, inFile := range inFiles {
-			exePath, err := c.Compile(f, "g++")
+			exePath, err := c.Compile(f, "g++", "-std=c++17")
 			if err != nil {
 				return nil, err
 			}

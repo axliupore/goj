@@ -23,7 +23,12 @@ var extMap = map[string]string{
 func GetCodeFiles() ([]*File, error) {
 	var files []*File
 
-	fileInfos, err := GetFilesInCurrentDir()
+	dir, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	fileInfos, err := GetFilesDir(dir)
 	if err != nil {
 		return nil, err
 	}
@@ -53,12 +58,7 @@ func GetCodeFiles() ([]*File, error) {
 	return files, nil
 }
 
-func GetFilesInCurrentDir() ([]fs.FileInfo, error) {
-	dir, err := os.Getwd()
-	if err != nil {
-		return nil, nil
-	}
-
+func GetFilesDir(dir string) ([]fs.FileInfo, error) {
 	dirId, err := os.Open(dir)
 	if err != nil {
 		return nil, nil
